@@ -50,7 +50,7 @@ const main = async () => {
         break;
 
       case 2:
-        busquedas.historial.forEach((lugar, index) => {
+        busquedas.historialCapitalizado.forEach((lugar, index) => {
           const idx = `${index + 1}`.green;
           console.log(`${idx} - ${lugar}`);
         });
