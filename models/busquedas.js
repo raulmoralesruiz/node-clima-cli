@@ -1,8 +1,10 @@
-require("dotenv").config();
+const fs = require("fs");
+
 const { default: axios } = require("axios");
 
 class Busquedas {
   historial = [];
+  dbPath = "./db/database.json";
 
   constructor() {
     // TODO: leer DB si existe
@@ -25,8 +27,8 @@ class Busquedas {
       return resp.data.map((lugar) => ({
         id: lugar.place_id,
         nombre: lugar.display_name,
-        lng: lugar.lon,
-        lat: lugar.lat,
+        lng: parseFloat(lugar.lon),
+        lat: parseFloat(lugar.lat),
       }));
     } catch (error) {
       return [];
@@ -62,6 +64,22 @@ class Busquedas {
     } catch (error) {
       console.log(error);
     }
+  }
+
+  agregarHistorial(lugar = "") {
+    if (this.historial.includes(lugar.toLocaleLowerCase())) {
+      return;
+    }
+
+    this.historial.unshift(lugar.toLocaleLowerCase());
+
+    // grabar en DB
+    this.guardarDB();
+  }
+
+  guardarDB() {
+    const payload = { historial: this.historial };
+    fs.writeFileSync(this.dbPath, JSON.stringify(payload));
   }
 }
 
